@@ -1,0 +1,11 @@
+requests
+cloudscraper
+python-dotenv
+fastapi
+uvicorn[standard]
+pydantic
+slowapi
+httpx
+websocket-client
+curl_cffi
+mcp>=1.30,<2
