@@ -4,6 +4,21 @@
 
 > **状态：已放弃（2026-10-16）。** 工具往返能跑通，但多步任务里 Notion 经常在工具结果之后只思考、不回答，然后断流，根因没有确诊。完整的完成情况、卡点和继续研究的建议见 **[docs/NOTION_MCP_BRIDGE_POSTMORTEM.md](docs/NOTION_MCP_BRIDGE_POSTMORTEM.md)**。公开出来，希望有人能突破。
 
+## 结论速览
+
+| 项目 | 结果 |
+| --- | --- |
+| Notion 原生调用本机工具（个人 MCP 回调） | 跑通，本机随机标记往返验证 |
+| 大工具目录（503 个函数、622 KB） | 可用 |
+| CPA 下的 Chat / Responses 接口 | 可用 |
+| 流式去重、截断补发、续传判定、失败报错 | 已修 |
+| Haiku 5.5 多步工具任务 | 多数能完成，但正文偶尔夹带假工具调用文本 |
+| Sonnet 5.5 / Opus 5.5 多步工具任务 | **大概率失败**：工具结果回来后只思考不回答，约 60 秒后断流，同线程重试拿到空流 |
+| 带工具时的速度 | 两步流程 6–18 秒，比直连慢很多 |
+| 根因 | **未确诊**，候选原因和建议实验见复盘第 5、8 节 |
+
+复盘目录：目标与约束 → 最终架构 → **实验时间线（10-12 到 10-16）** → 实现清单 → **最终卡点（含日志）** → 放弃的路线 → 诊断方法 → **给后来者的复现步骤和"突破"判定标准** → 配置项。
+
 ## 基于的上游项目
 
 本仓库基于 **[maverickxone/notion2api](https://github.com/maverickxone/notion2api)**（MIT License）修改而来。Notion 会话、账号池、流解析、模型注册、Web 前端等基础功能都来自上游，原 README 保留在 [docs/UPSTREAM_README.md](docs/UPSTREAM_README.md)（[English](docs/UPSTREAM_README_EN.md)）。感谢上游作者。
