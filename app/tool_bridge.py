@@ -242,6 +242,17 @@ class ClientToolBridge:
                         session_tag(session), conversation_key[-16:], existing_thread[:8])
         listing = catalog_listing(session.tools)
         directive = (
+            # Framing first. Written to as an assistant asked to act, the model
+            # answers for its own execution — and after a tool result comes
+            # back it keeps thinking instead of answering, which is the failure
+            # in docs/NOTION_MCP_BRIDGE_POSTMORTEM.md §5. Written to as the
+            # planner for an operator that executes, it plans the next step and
+            # waits for the report.
+            "You plan for a coding agent. Its runtime executes every action and reports "
+            "the outcome back to you; execution is not your part of the job, and whether "
+            "you could do it alone is not worth a sentence in the reply. Work from what "
+            "the runtime has actually returned: do not describe an action as done before "
+            "its result arrives. "
             "The current API client provides external tools through Sam Local Tools MCP. "
             f"The request_id for this request only is {session.id}. "
             + listing +
